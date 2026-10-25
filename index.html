@@ -57,9 +57,50 @@ h2{font-size:28px;font-weight:900;margin-bottom:6px}
 .repo small{color:var(--mut)}
 footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-align:center;font-size:14px}
 @media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:36px}.photo{order:-1}.stats{grid-template-columns:repeat(2,1fr)}.grid,.repos{grid-template-columns:1fr}.links a:not(.keep){display:none}}
+
+/* ---- hareket ---- */
+.blob{position:fixed;z-index:-1;border-radius:50%;filter:blur(90px);opacity:.45;animation:float 14s ease-in-out infinite}
+.b1{width:420px;height:420px;background:#5ad2ff;top:-80px;left:-80px}
+.b2{width:480px;height:480px;background:#8b5cf6;top:30%;right:-140px;animation-delay:-5s}
+.b3{width:360px;height:360px;background:#ff3b8b;bottom:-100px;left:25%;opacity:.25;animation-delay:-9s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-50px) scale(1.12)}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+.cursor{display:inline-block;width:3px;background:var(--ac);margin-left:4px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.type{color:var(--ac);font-weight:800}
+.photo img{animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 60px #5ad2ff44}50%{box-shadow:0 0 110px #8b5cf688}}
+.photo::before{content:"";position:absolute;inset:-18px;border-radius:50%;border:2px dashed #5ad2ff55;animation:spin 24s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:16px 0;margin:10px 0;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.track{display:flex;gap:14px;width:max-content;animation:mq 28s linear infinite}
+.marquee:hover .track{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.card,.stat,.ep{position:relative;overflow:hidden}
+.card::after,.stat::after,.ep::after{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),#5ad2ff22,transparent 60%);opacity:0;transition:.25s;pointer-events:none}
+.card:hover::after,.stat:hover::after,.ep:hover::after{opacity:1}
+.ep:hover{transform:translateX(6px);border-color:var(--ac);transition:.2s}
+.langs{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.langs i{font-style:normal;font-weight:800;font-size:13px;padding:5px 10px;border-radius:8px;background:linear-gradient(135deg,#5ad2ff33,#8b5cf633);border:1px solid var(--line);animation:pop 3s ease-in-out infinite}
+.langs i:nth-child(2){animation-delay:.3s}.langs i:nth-child(3){animation-delay:.6s}.langs i:nth-child(4){animation-delay:.9s}.langs i:nth-child(5){animation-delay:1.2s}
+@keyframes pop{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.term{background:#050816;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 20px 60px #0008}
+.term .bar{display:flex;gap:7px;padding:12px 16px;background:#0d1330;border-bottom:1px solid var(--line)}
+.term .bar i{width:12px;height:12px;border-radius:50%;background:#ff5f56}.term .bar i:nth-child(2){background:#ffbd2e}.term .bar i:nth-child(3){background:#27c93f}
+.term .bar span{margin-left:10px;color:var(--mut);font-size:13px}
+.term pre{padding:20px;font:15px/1.7 ui-monospace,Consolas,monospace;min-height:210px;white-space:pre-wrap;color:#cfe3ff}
+.term .u{color:var(--ac)}.term .a{color:#9bffb0}.term .d{color:var(--mut)}
+.live{display:inline-flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;font-weight:600}
+.live i{width:9px;height:9px;border-radius:50%;background:#27c93f;box-shadow:0 0 0 0 #27c93f88;animation:ping 1.8s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--ac),var(--ac2));width:0;z-index:20}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
+<div class="progress" id="prog"></div>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <nav><div class="wrap">
   <a class="brand" href="#"><img src="profil_resmi.png" alt="">Hakkı Odabaş</a>
   <div class="links"><a href="#seri">Seri</a><a href="#projeler">Projeler</a><a href="#github">GitHub</a><a class="keep" href="https://www.youtube.com/@Hakkiodabas">YouTube</a></div>
@@ -68,8 +109,9 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
 <main class="wrap">
 <header class="hero">
   <div>
-    <span class="tag">📍 İstanbul · Yapay zeka × Yazılım</span>
+    <span class="tag">📍 İstanbul · <span class="live"><i></i>Her hafta yeni bölüm</span></span>
     <h1>Sıfırdan <span>Yapay Zeka</span>,<br>birlikte öğreniyoruz.</h1>
+    <div style="font-size:20px;margin-top:14px;min-height:32px">Ben <span class="type" id="typed"></span><span class="cursor">&nbsp;</span></div>
     <p>Yapay zekayla yazılım ve otomasyon araçları geliştiriyorum. Öğrendiklerimi hiç bilmeyenlere sade Türkçeyle YouTube'da anlatıyorum.</p>
     <div class="btns">
       <a class="btn yt" href="https://www.youtube.com/@Hakkiodabas?sub_confirmation=1">▶ YouTube'a abone ol</a>
@@ -80,7 +122,9 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
   <div class="photo"><img src="profil_resmi.png" alt="Hakkı Odabaş"></div>
 </header>
 
-<section id="istatistik">
+<div class="marquee"><div class="track" id="track"></div></div>
+
+<section id="istatistik" class="reveal">
   <div class="stats">
     <div class="stat"><b id="s-repo">–</b><span>GitHub reposu</span></div>
     <div class="stat"><b id="s-fol">–</b><span>Takipçi</span></div>
@@ -89,7 +133,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
   </div>
 </section>
 
-<section id="seri">
+<section id="seri" class="reveal">
   <h2>🎬 Sıfırdan Yapay Zeka</h2>
   <p class="sub">Hiç bilmeyenler için yapay zeka eğitimi. Kod bilmene gerek yok, ben de seninle birlikte öğreniyorum.</p>
   <div class="eps">
@@ -99,23 +143,29 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
   </div>
 </section>
 
-<section id="projeler">
+<section id="projeler" class="reveal">
   <h2>🛠️ Geliştirdiklerim</h2>
   <p class="sub">Yapay zekayla geliştirdiğim araçlar.</p>
   <div class="grid">
     <div class="card"><div class="ico">📱</div><h3>Antigravity ↔ Telegram</h3><p>Bilgisayardaki yapay zeka geliştirme ortamını telefondan Telegram ile yönetmek.</p></div>
     <div class="card"><div class="ico">🎞️</div><h3>TulparEdit</h3><p>Yapay zekayla geliştirdiğim kendi video düzenleme programım.</p></div>
-    <a class="card" href="https://github.com/hakkiodbs/Proje_Olusturucu"><div class="ico">⚙️</div><h3>Proje Oluşturucu</h3><p>ChatGPT, Gemini ve Claude'un verdiği proje yapılarını tek tıkla klasör ve dosyalara çeviren Python aracı.</p></a>
+    <div class="card"><div class="ico">🌍</div><h3>5 Dilde Altyazı</h3><p>Videolarımı Türkçe, İngilizce, Almanca, Arapça ve Rusça altyazılarla yayınlıyorum.</p><div class="langs"><i>TR</i><i>EN</i><i>DE</i><i>AR</i><i>RU</i></div></div>
   </div>
 </section>
 
-<section>
+<section class="reveal">
   <h2>🧰 Kullandıklarım</h2>
   <p class="sub">Günlük çalıştığım araçlar.</p>
   <div><span class="pill">Python</span><span class="pill">C#</span><span class="pill">Google Antigravity</span><span class="pill">ChatGPT</span><span class="pill">Gemini</span><span class="pill">Claude</span><span class="pill">Telegram Bot</span></div>
 </section>
 
-<section id="github">
+<section id="telegram" class="reveal">
+  <h2>📱 Telefondan bilgisayarı yönetmek</h2>
+  <p class="sub">Antigravity'yi Telegram'dan kontrol etmenin nasıl bir şey olduğuna bir örnek.</p>
+  <div class="term"><div class="bar"><i></i><i></i><i></i><span>Telegram → Antigravity (örnek)</span></div><pre id="term"></pre></div>
+</section>
+
+<section id="github" class="reveal">
   <h2>💻 GitHub</h2>
   <p class="sub">Son güncellenen repolarım (canlı olarak GitHub'dan gelir).</p>
   <div class="repos" id="repos"><div class="card repo"><small>Yükleniyor…</small></div></div>
@@ -126,16 +176,17 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
 
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
+function count(id,n){const e=document.getElementById(id);if(typeof n!=='number'||isNaN(n))return;let i=0;const st=Math.max(1,Math.ceil(n/20));const t=setInterval(()=>{i=Math.min(n,i+st);e.textContent=i;if(i>=n)clearInterval(t)},45)}
 (async function(){
   try{
     const [u,r]=await Promise.all([
       fetch('https://api.github.com/users/hakkiodbs').then(x=>x.json()),
       fetch('https://api.github.com/users/hakkiodbs/repos?per_page=100&sort=updated').then(x=>x.json())
     ]);
-    document.getElementById('s-repo').textContent=u.public_repos;
-    document.getElementById('s-fol').textContent=u.followers;
-    document.getElementById('s-star').textContent=r.reduce((a,b)=>a+b.stargazers_count,0);
-    const box=document.getElementById('repos');box.innerHTML='';
+    count('s-repo',u.public_repos);
+    count('s-fol',u.followers);
+    count('s-star',r.reduce((a,b)=>a+b.stargazers_count,0));
+    if(!Array.isArray(r))throw 0;const box=document.getElementById('repos');box.innerHTML='';
     r.filter(x=>!x.fork&&x.name!=='hakkiodbs.github.io'&&x.name!=='hakkiodbs').slice(0,6).forEach(x=>{
       const a=document.createElement('a');a.className='card repo';a.href=x.html_url;
       const h=document.createElement('h3');h.textContent=x.name;
@@ -144,6 +195,27 @@ document.getElementById('y').textContent=new Date().getFullYear();
       a.append(h,p,s);box.appendChild(a);
     });
   }catch(e){document.getElementById('repos').innerHTML='<div class="card repo"><small>GitHub verisi şu an yüklenemedi.</small></div>'}
+})();
+
+/* ---- hareket ---- */
+(function(){
+  const words=['yapay zekayla yazılım geliştiriyorum','hiç bilmeyenlere anlatıyorum','kod bilmeden program yaptırıyorum','Telegram’dan bilgisayarı yönetiyorum'];
+  const el=document.getElementById('typed');let w=0,c=0,del=false;
+  (function tick(){const t=words[w];el.textContent=t.slice(0,c);
+    if(!del&&c<t.length){c++;setTimeout(tick,55)}
+    else if(!del){del=true;setTimeout(tick,1500)}
+    else if(c>0){c--;setTimeout(tick,28)}
+    else{del=false;w=(w+1)%words.length;setTimeout(tick,300)}})();
+  const tools=['Python','C#','Google Antigravity','ChatGPT','Gemini','Claude','Telegram Bot','Video Düzenleme','Otomasyon','YouTube','GitHub'];
+  const tr=document.getElementById('track');tr.innerHTML=tools.concat(tools).map(x=>'<span class="pill">'+x+'</span>').join('');
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(x=>io.observe(x));
+  document.addEventListener('mousemove',e=>{document.querySelectorAll('.card,.stat,.ep').forEach(c=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')})});
+  window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+  const lines=[['d','// bilgisayarım açık, ben telefondayım'],['u','Ben:    projeyi güncelle ve testi çalıştır'],['a','Bot:    Tamam, Antigravity’ye gönderdim…'],['d','        (bilgisayarda iş yapılıyor)'],['a','Bot:    Bitti ✅ Test başarılı.'],['u','Ben:    ekran görüntüsünü gönder'],['a','Bot:    📷 gönderildi']];
+  const pre=document.getElementById('term');let started=false;
+  const to=new IntersectionObserver(es=>{if(es[0].isIntersecting&&!started){started=true;run()}},{threshold:.4});to.observe(pre);
+  async function run(){for(;;){pre.innerHTML='';for(const[k,t]of lines){const s=document.createElement('span');s.className=k;pre.appendChild(s);for(const ch of t){s.textContent+=ch;await new Promise(r=>setTimeout(r,22))}pre.appendChild(document.createTextNode('\n'));await new Promise(r=>setTimeout(r,500))}await new Promise(r=>setTimeout(r,3500))}}
 })();
 </script>
 </body>
